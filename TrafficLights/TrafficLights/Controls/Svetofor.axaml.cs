@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Media;
 using System;
 using System.Collections.Generic;
@@ -34,6 +35,48 @@ namespace TrafficLights.Controls
         private Dictionary<LightName, LightDescriptor> LightsDescriptors 
             = new Dictionary<LightName, LightDescriptor>();
 
+        /// <summary>
+        /// Свойство управления красным огнём
+        /// </summary>
+        public static readonly AttachedProperty<bool> IsRedOnProperty
+            = AvaloniaProperty.RegisterAttached<Svetofor, Interactive, bool>(nameof(IsRedOn));
+
+        /// <summary>
+        /// Горит-ли красный огонь
+        /// </summary>
+        public bool IsRedOn
+        {
+            get { return GetValue(IsRedOnProperty); }
+            set { SetValue(IsRedOnProperty, value); }
+        }
+        /// <summary>
+        /// Свойство управления желтым огнём
+        /// </summary>
+        public static readonly AttachedProperty<bool> IsYellowOnProperty
+            = AvaloniaProperty.RegisterAttached<Svetofor, Interactive, bool>(nameof(IsYellowOn));
+
+        /// <summary>
+        /// Горит-ли желтый огонь
+        /// </summary>
+        public bool IsYellowOn
+        {
+            get { return GetValue(IsYellowOnProperty); }
+            set { SetValue(IsYellowOnProperty, value); }
+        }
+        /// <summary>
+        /// Свойство управления зеленым огнём
+        /// </summary>
+        public static readonly AttachedProperty<bool> IsGreenOnProperty
+            = AvaloniaProperty.RegisterAttached<Svetofor, Interactive, bool>(nameof(IsGreenOn));
+
+        /// <summary>
+        /// Горит-ли зеленый огонь
+        /// </summary>
+        public bool IsGreenOn
+        {
+            get { return GetValue(IsGreenOnProperty); }
+            set { SetValue(IsGreenOnProperty, value); }
+        }
         public Svetofor()
         {
             InitializeComponent();
@@ -62,12 +105,41 @@ namespace TrafficLights.Controls
                 {
                     OffColor = new Color(255, 0, 30, 0),
                     OnColor = Colors.Green,
-                    IsLightOn = true,
+                    IsLightOn = false,
                     Center = new Point(0, 0)
                 });
 
             // Подписываемся на изменение свойств окна
             PropertyChanged += OnPropertyChangedListener;
+
+            // Подписываемся на изменения состояния огней
+            IsRedOnProperty.Changed.Subscribe(x => HandleIsRedOnChanged(x.Sender, x.NewValue.GetValueOrDefault<bool>()));
+            IsYellowOnProperty.Changed.Subscribe(x => HandleIsYellowOnChanged(x.Sender, x.NewValue.GetValueOrDefault<bool>()));
+            IsGreenOnProperty.Changed.Subscribe(x => HandleIsGreenOnChanged(x.Sender, x.NewValue.GetValueOrDefault<bool>()));
+        }
+
+        /// <summary>
+        /// Слушатель изменения состояния красного огня
+        /// </summary>
+        private void HandleIsRedOnChanged(IAvaloniaObject sender, bool v)
+        {
+            InvalidateVisual();
+        }
+
+        /// <summary>
+        /// Слушатель изменения состояния желтого огня
+        /// </summary>
+        private void HandleIsYellowOnChanged(IAvaloniaObject sender, bool v)
+        {
+            InvalidateVisual();
+        }
+
+        /// <summary>
+        /// Слушатель изменения состояния зеленого огня
+        /// </summary>
+        private void HandleIsGreenOnChanged(IAvaloniaObject sender, bool v)
+        {
+            InvalidateVisual();
         }
 
         /// <summary>
@@ -103,8 +175,13 @@ namespace TrafficLights.Controls
 
             // Расчитываем координаты центров кругов светофора
             LightsDescriptors[LightName.Red].Center = new Point(_width / 2.0, _height / 4.0);
+            LightsDescriptors[LightName.Red].IsLightOn = IsRedOn;
+
             LightsDescriptors[LightName.Yellow].Center = new Point(_width / 2.0, _height / 4.0 * 2);
+            LightsDescriptors[LightName.Yellow].IsLightOn = IsYellowOn;
+
             LightsDescriptors[LightName.Green].Center = new Point(_width / 2.0, _height / 4.0 * 3);
+            LightsDescriptors[LightName.Green].IsLightOn = IsGreenOn;
 
             // Рисуем огни
             foreach (var lightDescriptorPair in LightsDescriptors)
