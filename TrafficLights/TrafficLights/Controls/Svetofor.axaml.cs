@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
+using System;
 using System.Collections.Generic;
 using TrafficLights.Enums;
 using TrafficLights.Models;
@@ -14,6 +15,16 @@ namespace TrafficLights.Controls
         /// Коэффициент, на который умножается радиус огней
         /// </summary>
         private const double LightRadiusFactor = 0.9;
+
+        /// <summary>
+        /// Радиус светодиода
+        /// </summary>
+        private const double LedRadius = 2;
+
+        /// <summary>
+        /// Расстояние между светодиодами
+        /// </summary>
+        private const double LedSpacing = 1.5;
 
         private double _scaling;
 
@@ -51,7 +62,7 @@ namespace TrafficLights.Controls
                 {
                     OffColor = new Color(255, 0, 30, 0),
                     OnColor = Colors.Green,
-                    IsLightOn = false,
+                    IsLightOn = true,
                     Center = new Point(0, 0)
                 });
 
@@ -110,11 +121,37 @@ namespace TrafficLights.Controls
         /// <param name="radius"></param>
         private void DrawLight(DrawingContext context, LightDescriptor descriptor, double radius)
         {
-            context.DrawEllipse(new SolidColorBrush(descriptor.IsLightOn ? descriptor.OnColor : descriptor.OffColor),
+            context.DrawEllipse(new SolidColorBrush(descriptor.OffColor),
                 new Pen(new SolidColorBrush(Colors.Black), 1),
                 descriptor.Center,
                 radius,
                 radius);
+
+            // R^2 > X^2 + Y^2
+            for (var y = descriptor.Center.Y - radius; y < descriptor.Center.Y + radius; y += LedSpacing + 2 * LedRadius)
+            {
+                for (var x = descriptor.Center.X - radius; x < descriptor.Center.X + radius; x += LedSpacing + 2 * LedRadius)
+                {
+                    if (Math.Pow(radius - LedRadius, 2) > Math.Pow(x - descriptor.Center.X, 2) + Math.Pow(y - descriptor.Center.Y, 2))
+                    {
+                        DrawLed(context, new Point(x, y), descriptor.OffColor, descriptor.OnColor, descriptor.IsLightOn);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Рисует один светодиод
+        /// </summary>
+        private void DrawLed(DrawingContext context, Point center, Color offColor, Color onColor, bool isOn)
+        {
+            var brush = new SolidColorBrush(isOn ? onColor : offColor);
+
+            context.DrawEllipse(brush,
+                new Pen(brush, 1),
+                center,
+                LedRadius,
+                LedRadius);
         }
     }
 }
