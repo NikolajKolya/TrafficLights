@@ -1,7 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Media;
 
-namespace TrafficLights.Models
+namespace TrafficLights.Controls
 {
     /// <summary>
     /// Описатель огня светофора

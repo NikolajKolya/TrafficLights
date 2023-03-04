@@ -4,8 +4,6 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using System;
 using System.Collections.Generic;
-using TrafficLights.Enums;
-using TrafficLights.Models;
 
 namespace TrafficLights.Controls
 {

@@ -1,4 +1,4 @@
-﻿namespace TrafficLights.Enums
+﻿namespace TrafficLights.BlinkingControl.Abstract
 {
     /// <summary>
     /// Имена огней светофора

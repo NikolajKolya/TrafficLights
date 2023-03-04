@@ -15,7 +15,7 @@
     </Design.DataContext>
 
 	<controls:Svetofor 
-		IsRedOn="True"
-		IsYellowOn="True"
-		IsGreenOn="True"/>
+		IsRedOn="{ Binding IsRedOn }"
+		IsYellowOn="{ Binding IsYellowOn }"
+		IsGreenOn="{ Binding IsGreenOn }"/>
 </Window>
