@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using TrafficLights.BlinkingControl.Abstract;
 using Microsoft.Extensions.DependencyInjection;
+using TrafficLights.Automat.Abstract;
 
 namespace TrafficLights.ViewModels
 {
@@ -14,6 +15,7 @@ namespace TrafficLights.ViewModels
         private bool _isGreenOn;
 
         private IBlinker _blinker;
+        private IAutomat _automat;
 
         public bool IsRedOn
         {
@@ -39,10 +41,13 @@ namespace TrafficLights.ViewModels
 
             _blinker.SetupDelegate(OnLightStateChange);
 
-            // Мигаем жёлтым, красный горит, зелёный погашен
-            _blinker.SetLightState(LightName.Red, LightState.On);
-            _blinker.SetLightState(LightName.Yellow, LightState.Blinking);
-            _blinker.SetLightState(LightName.Green, LightState.Off);
+            // Задаём начальное состояние огней
+            _blinker.SetLightState(LightName.Red, LightState.Off);
+            _blinker.SetLightState(LightName.Yellow, LightState.Off);
+            _blinker.SetLightState(LightName.Green, LightState.On);
+
+            // Инжектируем автомат, что запускает его
+            _automat = Program.Di.GetService<IAutomat>();
         }
 
         /// <summary>

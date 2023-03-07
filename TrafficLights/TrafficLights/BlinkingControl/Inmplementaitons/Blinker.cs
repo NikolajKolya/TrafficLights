@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Timers;
+using System.Xml.Linq;
 using TrafficLights.BlinkingControl.Abstract;
+using TrafficLights.ViewModels;
 
 namespace TrafficLights.BlinkingControl.Inmplementaitons
 {
@@ -60,7 +63,7 @@ namespace TrafficLights.BlinkingControl.Inmplementaitons
         public void SetLightState(LightName light, LightState state)
         {
             _lightStates[light] = state;
-
+            
             switch (state)
             {
                 case LightState.Off:

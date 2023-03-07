@@ -4,6 +4,7 @@ using Avalonia.ReactiveUI;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net;
+using TrafficLights.Automat.Abstract;
 using TrafficLights.BlinkingControl.Abstract;
 using TrafficLights.BlinkingControl.Inmplementaitons;
 
@@ -43,6 +44,7 @@ namespace TrafficLights
             IServiceCollection services = new ServiceCollection();
 
             services.AddSingleton<IBlinker, Blinker>();
+            services.AddSingleton<IAutomat, Automat.Implementations.Automat>();
 
             return services;
         }
